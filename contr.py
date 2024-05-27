@@ -1,0 +1,2 @@
+abi = ""
+contract_address = ""
