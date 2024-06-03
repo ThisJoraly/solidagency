@@ -56,7 +56,7 @@ def create_estate(account):
             return
     es_type = int(input("Введите тип недвижимости (0-House, 1-Flat, 2-Loft, 3-Dacha): "))
     try:
-        tx_hash = contract.functions.createEstate(address_estate, square, es_type).transact({'from': account})
+        tx_hash = contract.functions.registerEstate().transact({'from': account})
         receipt = w3.eth.wait_for_transaction_receipt(tx_hash)
         print(f"Транзакция создания недвижимости подтверждена: {receipt.transactionHash.hex()}")
     except Exception as e:
@@ -66,7 +66,10 @@ def change_estate_status(account):
     estate_id = int(input("Введите ID недвижимости: "))
     is_active = input("Активна недвижимость? (да/нет): ").lower() == 'да'
     try:
-        tx_hash = contract.functions.updateEstateActive(estate_id, is_active).transact({'from': account})
+        if is_active:
+            tx_hash = contract.functions.activateEstate(estate_id).transact({'from': account})
+        else:
+            tx_hash = contract.functions.deactivateEstate(estate_id).transact({'from': account})
         receipt = w3.eth.wait_for_transaction_receipt(tx_hash)
         print(f"Транзакция изменения статуса недвижимости подтверждена: {receipt.transactionHash.hex()}")
     except Exception as e:
@@ -80,7 +83,7 @@ def create_advertisement(account):
             print("Цена должна быть больше нуля")
             return
     try:
-        tx_hash = contract.functions.createAd(estate_id, int(price * 10 ** 18)).transact({'from': account})
+        tx_hash = contract.functions.publishAdvertisement(estate_id, int(price * 10 ** 18)).transact({'from': account})
         receipt = w3.eth.wait_for_transaction_receipt(tx_hash)
         print(f"Транзакция создания объявления подтверждена: {receipt.transactionHash.hex()}")
     except Exception as e:
@@ -90,7 +93,10 @@ def change_ad_status(account):
     ad_id = int(input("Введите ID объявления: "))
     new_status = int(input("Введите новый статус объявления (0-Opened, 1-Closed): "))
     try:
-        tx_hash = contract.functions.updateAdType(ad_id, new_status).transact({'from': account})
+        if new_status == 0:
+            tx_hash = contract.functions.activateAdvertisement(ad_id).transact({'from': account})
+        else:
+            tx_hash = contract.functions.deactivateAdvertisement(ad_id).transact({'from': account})
         receipt = w3.eth.wait_for_transaction_receipt(tx_hash)
         print(f"Транзакция изменения статуса объявления подтверждена: {receipt.transactionHash.hex()}")
     except Exception as e:
@@ -99,9 +105,9 @@ def change_ad_status(account):
 def buy_estate(account):
     ad_id = int(input("Введите ID объявления для покупки: "))
     try:
-        ad = contract.functions.ads(ad_id).call()
-        ad_price = ad[0]  # price is the first element in the returned tuple
-        tx_hash = contract.functions.buyEstate(ad_id).transact({'from': account, 'value': ad_price})
+        ad = contract.functions.getAdvertisement(ad_id).call()
+        ad_price = ad[4]  # price is the fifth element in the returned tuple
+        tx_hash = contract.functions.buyEstate(ad_id, account).transact({'from': account, 'value': ad_price})
         receipt = w3.eth.wait_for_transaction_receipt(tx_hash)
         print(f"Транзакция покупки недвижимости подтверждена: {receipt.transactionHash.hex()}")
     except Exception as e:
@@ -118,7 +124,7 @@ def withdraw_funds(account):
             print("Сумма должна быть больше нуля")
             return
     try:
-        tx_hash = contract.functions.withdraw(Web3.toWei(amount, 'ether')).transact({'from': account})
+        tx_hash = contract.functions.withdrawFunds(Web3.toWei(amount, 'ether')).transact({'from': account})
         receipt = w3.eth.wait_for_transaction_receipt(tx_hash)
         print(f"Транзакция вывода средств подтверждена: {receipt.transactionHash.hex()}")
     except Exception as e:
@@ -130,30 +136,33 @@ def withdraw_funds(account):
 
 def get_balance_on_contract(account):
     try:
-        balance = contract.functions.getBalance().call({'from': account})
+        balance = contract.functions.accountBalance().call({'from': account})
         print(f"Ваш баланс на смарт-контракте: {Web3.fromWei(balance, 'ether')} ether")
     except Exception as e:
         print(f"Ошибка получения информации о балансе: {e}")
 
 def get_estates(account):
     try:
-        estates = contract.functions.getEstates().call({'from': account})
-        if not estates:
-            print("Нет доступных недвижимостей.")
-        else:
-            for estate in estates:
-                print(f"ID: {estate['estateId']}, Адрес: {estate['addressEstate']}, Площадь: {estate['square']} кв.м, Тип: {estate['esType']}, Владелец: {estate['owner']}, Активна: {'Да' if estate['isActive'] else 'Нет'}")
+        estate_count = contract.functions.estateCount().call({'from': account})
+        for estate_id in range(1, estate_count + 1):
+            estate = contract.functions.getEstate(estate_id).call({'from': account})
+            owner = estate[0]
+            is_active = estate[2]
+            if owner == account:
+                print(f"ID: {estate_id}, Владелец: {owner}, Активна: {'Да' if is_active else 'Нет'}")
     except Exception as e:
         print(f"Ошибка получения списка недвижимостей: {e}")
 
 def get_ads(account):
     try:
-        ads = contract.functions.getAds().call({'from': account})
-        if not ads:
-            print("Нет доступных объявлений.")
-        else:
-            for ad in ads:
-                print(f"ID объявления: {ad['adId']}, Цена: {Web3.fromWei(ad['price'], 'ether')} ether, ID недвижимости: {ad['estateId']}, Владелец: {ad['owner']}, Покупатель: {ad['buyer']}, Статус: {'Открыто' if ad['adType'] == 0 else 'Закрыто'}")
+        ad_count = contract.functions.advertisementCount().call({'from': account})
+        for ad_id in range(1, ad_count + 1):
+            ad = contract.functions.getAdvertisement(ad_id).call({'from': account})
+            owner = ad[0]
+            is_active = ad[3]
+            price = Web3.fromWei(ad[4], 'ether')
+            if owner == account:
+                print(f"ID объявления: {ad_id}, Цена: {price} ether, Владелец: {owner}, Статус: {'Открыто' if is_active else 'Закрыто'}")
     except Exception as e:
         print(f"Ошибка получения списка объявлений: {e}")
 
