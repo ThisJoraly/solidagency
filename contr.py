@@ -8,10 +8,16 @@ abi = """[
 		"anonymous": false,
 		"inputs": [
 			{
+				"indexed": true,
+				"internalType": "uint256",
+				"name": "adId",
+				"type": "uint256"
+			},
+			{
 				"indexed": false,
-				"internalType": "address",
-				"name": "owner",
-				"type": "address"
+				"internalType": "uint256",
+				"name": "price",
+				"type": "uint256"
 			},
 			{
 				"indexed": false,
@@ -21,20 +27,14 @@ abi = """[
 			},
 			{
 				"indexed": false,
-				"internalType": "uint256",
-				"name": "adId",
-				"type": "uint256"
+				"internalType": "address",
+				"name": "owner",
+				"type": "address"
 			},
 			{
 				"indexed": false,
 				"internalType": "uint256",
-				"name": "publicationDate",
-				"type": "uint256"
-			},
-			{
-				"indexed": false,
-				"internalType": "uint256",
-				"name": "salePrice",
+				"name": "adType",
 				"type": "uint256"
 			}
 		],
@@ -45,19 +45,7 @@ abi = """[
 		"anonymous": false,
 		"inputs": [
 			{
-				"indexed": false,
-				"internalType": "address",
-				"name": "owner",
-				"type": "address"
-			},
-			{
-				"indexed": false,
-				"internalType": "uint256",
-				"name": "estateId",
-				"type": "uint256"
-			},
-			{
-				"indexed": false,
+				"indexed": true,
 				"internalType": "uint256",
 				"name": "adId",
 				"type": "uint256"
@@ -65,58 +53,75 @@ abi = """[
 			{
 				"indexed": false,
 				"internalType": "uint256",
-				"name": "changeDate",
+				"name": "adType",
 				"type": "uint256"
-			},
-			{
-				"indexed": false,
-				"internalType": "bool",
-				"name": "newStatus",
-				"type": "bool"
 			}
 		],
 		"name": "AdUpdated",
 		"type": "event"
 	},
 	{
-		"anonymous": false,
 		"inputs": [
 			{
-				"indexed": false,
-				"internalType": "address",
-				"name": "owner",
-				"type": "address"
-			},
-			{
-				"indexed": false,
 				"internalType": "uint256",
-				"name": "estateId",
+				"name": "_adId",
 				"type": "uint256"
-			},
-			{
-				"indexed": false,
-				"internalType": "uint256",
-				"name": "registrationDate",
-				"type": "uint256"
-			},
-			{
-				"indexed": false,
-				"internalType": "string",
-				"name": "propertyCategory",
-				"type": "string"
 			}
 		],
-		"name": "EstateCreated",
-		"type": "event"
+		"name": "buyEstate",
+		"outputs": [],
+		"stateMutability": "payable",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "uint256",
+				"name": "_estateId",
+				"type": "uint256"
+			},
+			{
+				"internalType": "uint256",
+				"name": "_price",
+				"type": "uint256"
+			}
+		],
+		"name": "createAd",
+		"outputs": [],
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "string",
+				"name": "_addressEstate",
+				"type": "string"
+			},
+			{
+				"internalType": "uint256",
+				"name": "_square",
+				"type": "uint256"
+			},
+			{
+				"internalType": "uint256",
+				"name": "_esType",
+				"type": "uint256"
+			}
+		],
+		"name": "createEstate",
+		"outputs": [],
+		"stateMutability": "nonpayable",
+		"type": "function"
 	},
 	{
 		"anonymous": false,
 		"inputs": [
 			{
-				"indexed": false,
-				"internalType": "address",
-				"name": "owner",
-				"type": "address"
+				"indexed": true,
+				"internalType": "uint256",
+				"name": "adId",
+				"type": "uint256"
 			},
 			{
 				"indexed": false,
@@ -127,40 +132,40 @@ abi = """[
 			{
 				"indexed": false,
 				"internalType": "uint256",
-				"name": "adId",
+				"name": "price",
 				"type": "uint256"
-			},
+			}
+		],
+		"name": "EstateBought",
+		"type": "event"
+	},
+	{
+		"anonymous": false,
+		"inputs": [
 			{
-				"indexed": false,
+				"indexed": true,
 				"internalType": "uint256",
 				"name": "estateId",
 				"type": "uint256"
 			},
 			{
 				"indexed": false,
-				"internalType": "bool",
-				"name": "adStatus",
-				"type": "bool"
+				"internalType": "string",
+				"name": "addressEstate",
+				"type": "string"
 			},
 			{
 				"indexed": false,
 				"internalType": "uint256",
-				"name": "saleDate",
+				"name": "square",
 				"type": "uint256"
 			},
 			{
 				"indexed": false,
 				"internalType": "uint256",
-				"name": "salePrice",
+				"name": "esType",
 				"type": "uint256"
-			}
-		],
-		"name": "EstatePurchased",
-		"type": "event"
-	},
-	{
-		"anonymous": false,
-		"inputs": [
+			},
 			{
 				"indexed": false,
 				"internalType": "address",
@@ -169,56 +174,19 @@ abi = """[
 			},
 			{
 				"indexed": false,
-				"internalType": "uint256",
-				"name": "estateId",
-				"type": "uint256"
-			},
-			{
-				"indexed": false,
-				"internalType": "uint256",
-				"name": "changeDate",
-				"type": "uint256"
-			},
-			{
-				"indexed": false,
 				"internalType": "bool",
-				"name": "newStatus",
+				"name": "isActive",
 				"type": "bool"
 			}
 		],
-		"name": "EstateUpdated",
+		"name": "EstateCreated",
 		"type": "event"
 	},
 	{
 		"anonymous": false,
 		"inputs": [
 			{
-				"indexed": false,
-				"internalType": "address",
-				"name": "receiver",
-				"type": "address"
-			},
-			{
-				"indexed": false,
-				"internalType": "uint256",
-				"name": "amount",
-				"type": "uint256"
-			},
-			{
-				"indexed": false,
-				"internalType": "uint256",
-				"name": "withdrawalDate",
-				"type": "uint256"
-			}
-		],
-		"name": "FundsSent",
-		"type": "event"
-	},
-	{
-		"anonymous": false,
-		"inputs": [
-			{
-				"indexed": false,
+				"indexed": true,
 				"internalType": "address",
 				"name": "user",
 				"type": "address"
@@ -230,33 +198,56 @@ abi = """[
 				"type": "uint256"
 			}
 		],
-		"name": "Transaction",
+		"name": "FundsWithdrawn",
 		"type": "event"
 	},
 	{
-		"inputs": [],
-		"name": "accountBalance",
-		"outputs": [
+		"inputs": [
 			{
 				"internalType": "uint256",
-				"name": "",
+				"name": "_adId",
+				"type": "uint256"
+			},
+			{
+				"internalType": "uint256",
+				"name": "_adType",
 				"type": "uint256"
 			}
 		],
-		"stateMutability": "view",
+		"name": "updateAdType",
+		"outputs": [],
+		"stateMutability": "nonpayable",
 		"type": "function"
 	},
 	{
-		"inputs": [],
-		"name": "advertisementCount",
-		"outputs": [
+		"inputs": [
 			{
 				"internalType": "uint256",
-				"name": "",
+				"name": "_estateId",
+				"type": "uint256"
+			},
+			{
+				"internalType": "bool",
+				"name": "_isActive",
+				"type": "bool"
+			}
+		],
+		"name": "updateEstateActive",
+		"outputs": [],
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "uint256",
+				"name": "_amount",
 				"type": "uint256"
 			}
 		],
-		"stateMutability": "view",
+		"name": "withdraw",
+		"outputs": [],
+		"stateMutability": "nonpayable",
 		"type": "function"
 	},
 	{
@@ -267,12 +258,17 @@ abi = """[
 				"type": "uint256"
 			}
 		],
-		"name": "advertisements",
+		"name": "ads",
 		"outputs": [
 			{
-				"internalType": "address",
-				"name": "owner",
-				"type": "address"
+				"internalType": "uint256",
+				"name": "adId",
+				"type": "uint256"
+			},
+			{
+				"internalType": "uint256",
+				"name": "price",
+				"type": "uint256"
 			},
 			{
 				"internalType": "uint256",
@@ -280,18 +276,18 @@ abi = """[
 				"type": "uint256"
 			},
 			{
-				"internalType": "uint256",
-				"name": "adId",
-				"type": "uint256"
+				"internalType": "address payable",
+				"name": "owner",
+				"type": "address"
 			},
 			{
-				"internalType": "bool",
-				"name": "isActive",
-				"type": "bool"
+				"internalType": "address payable",
+				"name": "buyer",
+				"type": "address"
 			},
 			{
 				"internalType": "uint256",
-				"name": "salePrice",
+				"name": "adType",
 				"type": "uint256"
 			}
 		],
@@ -299,52 +295,8 @@ abi = """[
 		"type": "function"
 	},
 	{
-		"inputs": [
-			{
-				"internalType": "uint256",
-				"name": "_estateId",
-				"type": "uint256"
-			},
-			{
-				"internalType": "address",
-				"name": "_buyer",
-				"type": "address"
-			}
-		],
-		"name": "buyEstate",
-		"outputs": [],
-		"stateMutability": "nonpayable",
-		"type": "function"
-	},
-	{
-		"inputs": [
-			{
-				"internalType": "uint256",
-				"name": "_estateId",
-				"type": "uint256"
-			}
-		],
-		"name": "deactivateAdvertisement",
-		"outputs": [],
-		"stateMutability": "nonpayable",
-		"type": "function"
-	},
-	{
-		"inputs": [
-			{
-				"internalType": "uint256",
-				"name": "_estateId",
-				"type": "uint256"
-			}
-		],
-		"name": "deactivateEstate",
-		"outputs": [],
-		"stateMutability": "nonpayable",
-		"type": "function"
-	},
-	{
 		"inputs": [],
-		"name": "estateCount",
+		"name": "adsCounter",
 		"outputs": [
 			{
 				"internalType": "uint256",
@@ -366,14 +318,29 @@ abi = """[
 		"name": "estates",
 		"outputs": [
 			{
-				"internalType": "address",
-				"name": "owner",
-				"type": "address"
-			},
-			{
 				"internalType": "uint256",
 				"name": "estateId",
 				"type": "uint256"
+			},
+			{
+				"internalType": "string",
+				"name": "addressEstate",
+				"type": "string"
+			},
+			{
+				"internalType": "uint256",
+				"name": "square",
+				"type": "uint256"
+			},
+			{
+				"internalType": "uint256",
+				"name": "esType",
+				"type": "uint256"
+			},
+			{
+				"internalType": "address payable",
+				"name": "owner",
+				"type": "address"
 			},
 			{
 				"internalType": "bool",
@@ -385,21 +352,33 @@ abi = """[
 		"type": "function"
 	},
 	{
-		"inputs": [
+		"inputs": [],
+		"name": "estatesCounter",
+		"outputs": [
 			{
 				"internalType": "uint256",
-				"name": "_adId",
+				"name": "",
 				"type": "uint256"
 			}
 		],
-		"name": "getAdvertisement",
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [],
+		"name": "getAds",
 		"outputs": [
 			{
 				"components": [
 					{
-						"internalType": "address",
-						"name": "owner",
-						"type": "address"
+						"internalType": "uint256",
+						"name": "adId",
+						"type": "uint256"
+					},
+					{
+						"internalType": "uint256",
+						"name": "price",
+						"type": "uint256"
 					},
 					{
 						"internalType": "uint256",
@@ -407,24 +386,24 @@ abi = """[
 						"type": "uint256"
 					},
 					{
-						"internalType": "uint256",
-						"name": "adId",
-						"type": "uint256"
+						"internalType": "address payable",
+						"name": "owner",
+						"type": "address"
 					},
 					{
-						"internalType": "bool",
-						"name": "isActive",
-						"type": "bool"
+						"internalType": "address payable",
+						"name": "buyer",
+						"type": "address"
 					},
 					{
 						"internalType": "uint256",
-						"name": "salePrice",
+						"name": "adType",
 						"type": "uint256"
 					}
 				],
-				"internalType": "struct PropertyManager.Advertisement",
+				"internalType": "struct RealEstate.Ad[]",
 				"name": "",
-				"type": "tuple"
+				"type": "tuple[]"
 			}
 		],
 		"stateMutability": "view",
@@ -444,26 +423,35 @@ abi = """[
 		"type": "function"
 	},
 	{
-		"inputs": [
-			{
-				"internalType": "uint256",
-				"name": "_estateId",
-				"type": "uint256"
-			}
-		],
-		"name": "getEstate",
+		"inputs": [],
+		"name": "getEstates",
 		"outputs": [
 			{
 				"components": [
 					{
-						"internalType": "address",
-						"name": "owner",
-						"type": "address"
-					},
-					{
 						"internalType": "uint256",
 						"name": "estateId",
 						"type": "uint256"
+					},
+					{
+						"internalType": "string",
+						"name": "addressEstate",
+						"type": "string"
+					},
+					{
+						"internalType": "uint256",
+						"name": "square",
+						"type": "uint256"
+					},
+					{
+						"internalType": "uint256",
+						"name": "esType",
+						"type": "uint256"
+					},
+					{
+						"internalType": "address payable",
+						"name": "owner",
+						"type": "address"
 					},
 					{
 						"internalType": "bool",
@@ -471,84 +459,32 @@ abi = """[
 						"type": "bool"
 					}
 				],
-				"internalType": "struct PropertyManager.Estate",
+				"internalType": "struct RealEstate.Estate[]",
 				"name": "",
-				"type": "tuple"
+				"type": "tuple[]"
 			}
 		],
 		"stateMutability": "view",
 		"type": "function"
 	},
 	{
-		"inputs": [],
-		"name": "isOperational",
-		"outputs": [
-			{
-				"internalType": "bool",
-				"name": "",
-				"type": "bool"
-			}
-		],
-		"stateMutability": "view",
-		"type": "function"
-	},
-	{
-		"inputs": [],
-		"name": "manager",
-		"outputs": [
+		"inputs": [
 			{
 				"internalType": "address",
 				"name": "",
 				"type": "address"
 			}
 		],
+		"name": "userBalances",
+		"outputs": [
+			{
+				"internalType": "uint256",
+				"name": "",
+				"type": "uint256"
+			}
+		],
 		"stateMutability": "view",
-		"type": "function"
-	},
-	{
-		"inputs": [
-			{
-				"internalType": "uint256",
-				"name": "_estateId",
-				"type": "uint256"
-			},
-			{
-				"internalType": "uint256",
-				"name": "_salePrice",
-				"type": "uint256"
-			}
-		],
-		"name": "publishAdvertisement",
-		"outputs": [],
-		"stateMutability": "nonpayable",
-		"type": "function"
-	},
-	{
-		"inputs": [],
-		"name": "registerEstate",
-		"outputs": [],
-		"stateMutability": "nonpayable",
-		"type": "function"
-	},
-	{
-		"inputs": [],
-		"name": "sendBalance",
-		"outputs": [],
-		"stateMutability": "payable",
-		"type": "function"
-	},
-	{
-		"inputs": [
-			{
-				"internalType": "uint256",
-				"name": "_amount",
-				"type": "uint256"
-			}
-		],
-		"name": "withdrawFunds",
-		"outputs": [],
-		"stateMutability": "nonpayable",
 		"type": "function"
 	}
 ]"""
-contract_address = "0xD8776934055803342e5d39B7b4F9db62B2E515D9"
+contract_address = "0x3cb089Fc3858129D8076C6a43e4053EB3374b055"
